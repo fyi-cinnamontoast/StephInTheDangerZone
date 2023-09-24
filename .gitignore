@@ -1,0 +1,6 @@
+client/dist/main.js
+client/dist/main.js.LICENSE.txt
+client/dist/main.js.map
+**/node_modules/
+**/node_modules/
+server/.vscode
