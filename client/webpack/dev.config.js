@@ -4,6 +4,11 @@ const webpack = require("webpack");
 
 module.exports = [
   {
+    resolve: {
+      fallbacks: {
+        "http": require.resolve("stream-http")
+      }
+    },
     mode: "development",
     entry: "./src/index.ts",
     devtool: "source-map",
@@ -16,7 +21,7 @@ module.exports = [
         {
           test: /\.ts$/,
           exclude: /node_modules/,
-          loader: "babel-loader",
+          loader: "ts-loader",
         },
         {
           test: /\.(png|svg|jpg|gif|ico)$/,
@@ -27,22 +32,11 @@ module.exports = [
     resolve: {
       extensions: ['.ts', '.js'],
     },
-    devServer: {
-      static: {
-        directory: path.join(__dirname, '../dist'),
-      },
-      compress: true,
-      port: 8080,
-    },
     plugins: [
       new HtmlWebpackPlugin({
         template: "./dist/index.html",
         favicon: "./dist/assets/favicon.ico"
       })
     ],
-    watch: true,
-    watchFilter: () => {
-
-    }
   }
 ];

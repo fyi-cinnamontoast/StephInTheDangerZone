@@ -1,7 +1,7 @@
 import { Application, Assets, BaseTexture, SCALE_MODES } from "pixi.js";
 import FontFaceObserver from "fontfaceobserver";
 import config from "./config.json";
-import NetConnection, { NetMessage } from "./network";
+import { NetConnection } from "networking/netconnection";
 import Page, { PageManager } from "./page";
 import LoginPage from "./LoginPage";
 
@@ -15,16 +15,16 @@ document.body.appendChild(app.view)
 PageManager.init(app)
 
 // Create connection
-NetConnection.listen(config.connection)
+var net = NetConnection.connect(config.connection)
 
 // Send Register Request
-NetConnection.send("Register", {
+net.send("Register", {
     username: "sizakuma",
     password: "163271234",
 })
 
 // On Authorise Response
-NetConnection.on("Authorise", function() {
+net.on("Authorise", function() {
     if (this.context.status) {
         console.log("Logged In")
     } else {

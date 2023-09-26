@@ -2,7 +2,6 @@ import { AnimatedSprite, Application, Assets, Graphics, Text } from "pixi.js";
 import { Button, Input } from "@pixi/ui"
 import Page from "./page";
 import PasswordInput from "./PasswordInput";
-import NetConnection, { NetMessage } from "./network";
 
 export default class LoginPage implements Page {
     display(app: Application): void {
@@ -80,11 +79,6 @@ export default class LoginPage implements Page {
         registerButtonText.anchor.set(0.5, 0.5)
         registerButtonText.position.set((registerButton.view.width / 2), registerButton.view.height / 2)
         registerButton.view.addChild(registerButtonText)
-        
-
-        NetConnection.onerror(() => {
-            console.log("OFFLINE")
-        })
 
         app.stage.addChild(uiView)
 

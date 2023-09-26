@@ -13,7 +13,7 @@ module.exports = [
         {
           test: /\.ts$/,
           exclude: /node_modules/,
-          loader: "babel-loader",
+          loader: "ts-loader",
         },
         {
           test: /\.(png|svg|jpg|gif|ico)$/,

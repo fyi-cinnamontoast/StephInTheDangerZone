@@ -16,8 +16,8 @@
   "main": "main.ts",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "npx tsc -p tsconfig.json",
-    "dev": "nodemon --watch ./src/* --exec npm start"
+    "build": "npx tsc -p tsconfig.json",
+    "dev": "nodemon --watch ./src/* --exec npm build"
   },
   "author": "SizAkuma",
   "license": "MIT",
