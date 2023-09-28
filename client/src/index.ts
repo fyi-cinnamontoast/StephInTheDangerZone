@@ -11,6 +11,8 @@ let app = new Application<HTMLCanvasElement>({
 })
 document.body.appendChild(app.view)
 
+console.log("TEST")
+
 PageManager.init(app)
 
 // Create connection
@@ -35,6 +37,7 @@ net.open(() => {
 })
 
 // Load Spritesheet and then start execution
-Assets.load("assets/pack.json").then(() => {
+Assets.load("assets/pack.json").then((value) => {
+    console.log(value)
     PageManager.switch(new LoginPage())
 })

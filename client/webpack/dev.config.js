@@ -4,11 +4,6 @@ const webpack = require("webpack");
 
 module.exports = [
   {
-    resolve: {
-      fallbacks: {
-        "http": require.resolve("stream-http")
-      }
-    },
     mode: "development",
     entry: "./src/index.ts",
     devtool: "source-map",
@@ -31,12 +26,6 @@ module.exports = [
     },
     resolve: {
       extensions: ['.ts', '.js'],
-    },
-    plugins: [
-      new HtmlWebpackPlugin({
-        template: "./dist/index.html",
-        favicon: "./dist/assets/favicon.ico"
-      })
-    ],
+    }
   }
 ];
