@@ -41,16 +41,16 @@ export default class LoginPage implements Page {
         usernameInput.position.set(25, 128)
 
         // Password
-        var passwordInput = uiView.addChild(new PasswordInput({
-            bg: new Graphics()
-                .beginFill(0xFFFFFF, 1)
-                .drawRoundedRect(0, 0, 350, 40, 3),
-            placeholder: "Enter Password...",
-            regex: /[a-zA-Z0-9_!@#$%^&*.]/,
-            substitude: "*",
-            maxLength: 32
-        }))
-        passwordInput.position.set(25, 173)
+        // var passwordInput = uiView.addChild(new PasswordInput({
+        //     bg: new Graphics()
+        //         .beginFill(0xFFFFFF, 1)
+        //         .drawRoundedRect(0, 0, 350, 40, 3),
+        //     placeholder: "Enter Password...",
+        //     regex: /[a-zA-Z0-9_!@#$%^&*.]/,
+        //     substitude: "*",
+        //     maxLength: 32
+        // }))
+        // passwordInput.position.set(25, 173)
 
         // Login Button
         var loginButton = new Button(

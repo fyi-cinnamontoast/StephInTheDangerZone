@@ -7,7 +7,7 @@ export class NetHandler {
     private _socket: WebSocket
 
     private _wanted: {
-        [name: string]: ((this: NetMessage<NetHandler, any, NetMessageContext>) => void)[]
+        [name: string]: ((this: NetMessage<any, NetMessageContext>) => void)[]
     } = {  }
 
     constructor(socket: WebSocket) {
@@ -27,10 +27,10 @@ export class NetHandler {
         this._socket.send(NetMessage.toJSON(type, context))
     }
 
-    on<_Type extends NetMessageType>(type: _Type, cb: (this: NetMessage<NetHandler, _Type, NetMessageContext>) => void): void;
-    on(type: "Authorise", cb: (this: NetMessage<NetHandler, "Authorise", { username: string, password: string }>) => void): void;
-    on(type: "Register", cb: (this: NetMessage<NetHandler, "Register", { username: string, password: string }>) => void): void;
-    on<_Type extends NetMessageType>(type: _Type, cb: (this: NetMessage<NetHandler, _Type, NetMessageContext>) => void) {
+    on<_Type extends NetMessageType>(type: _Type, cb: (this: NetMessage<_Type, NetMessageContext>) => void): void;
+    on(type: "Authorise", cb: (this: NetMessage<"Authorise", { username: string, password: string }>) => void): void;
+    on(type: "Register", cb: (this: NetMessage<"Register", { username: string, password: string }>) => void): void;
+    on<_Type extends NetMessageType>(type: _Type, cb: (this: NetMessage<_Type, NetMessageContext>) => void) {
         if (!this._wanted[type])
             this._wanted[type] = []
         this._wanted[type].push(cb)

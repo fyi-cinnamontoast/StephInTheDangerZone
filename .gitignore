@@ -6,3 +6,5 @@ client/dist/main.js.map
 server/.vscode
 server/dist/main.js
 server/dist/main.js.map
+server/dist/bundle.js
+server/dist/bundle.js.map

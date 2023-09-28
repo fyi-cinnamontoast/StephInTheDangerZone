@@ -1,4 +1,3 @@
-import * as ws from "ws"
 import { NetMessage, NetMessageType, NetMessageContext, AUTHORISE_FAILURE, AUTHORISE_SUCCESS } from "./netmessage"
 
 export class NetConnection {
@@ -7,8 +6,9 @@ export class NetConnection {
     private _socket: WebSocket
 
     private _wanted: {
-        [name: string]: ((this: NetMessage<NetConnection, any, NetMessageContext>) => void)[]
+        [name: string]: ((this: NetMessage<any, NetMessageContext>) => void)[]
     } = {  }
+    private _open: ((this: NetConnection) => void)[] = [ ]
 
     constructor(socket: WebSocket) {
         this._socket = socket
@@ -18,6 +18,15 @@ export class NetConnection {
                 this._wanted[msg.type].forEach(cb => cb.call(msg))
             }
         }
+        this._socket.onopen = (ev) => [
+            this._open.forEach(cb => cb.call(this))
+        ]
+    }
+
+    open(cb: (this: NetConnection) => void) {
+        this._open.push(cb)
+        if (this._socket.readyState == WebSocket.OPEN)
+            cb.call(this)
     }
 
     send(type: NetMessageType, context: NetMessageContext): void;
@@ -27,10 +36,10 @@ export class NetConnection {
         this._socket.send(NetMessage.toJSON(type, context))
     }
 
-    on<_Type extends NetMessageType>(type: _Type, cb: (this: NetMessage<NetConnection, _Type, NetMessageContext>) => void): void;
-    on(type: "Authorise", cb: (this: NetMessage<NetConnection, "Authorise", { status: typeof AUTHORISE_SUCCESS | typeof AUTHORISE_FAILURE, err?: { code: number, msg: string } }>) => void): void;
-    on(type: "Register", cb: (this: NetMessage<NetConnection, "Register", { status: typeof AUTHORISE_SUCCESS | typeof AUTHORISE_FAILURE, err?: { code: number, msg: string } }>) => void): void;
-    on<_Type extends NetMessageType>(type: _Type, cb: (this: NetMessage<NetConnection, _Type, NetMessageContext>) => void) {
+    on<_Type extends NetMessageType>(type: _Type, cb: (this: NetMessage<_Type, NetMessageContext>) => void): void;
+    on(type: "Authorise", cb: (this: NetMessage<"Authorise", { status: typeof AUTHORISE_SUCCESS | typeof AUTHORISE_FAILURE, err?: { code: number, msg: string } }>) => void): void;
+    on(type: "Register", cb: (this: NetMessage<"Register", { status: typeof AUTHORISE_SUCCESS | typeof AUTHORISE_FAILURE, err?: { code: number, msg: string } }>) => void): void;
+    on<_Type extends NetMessageType>(type: _Type, cb: (this: NetMessage<_Type, NetMessageContext>) => void) {
         if (!this._wanted[type])
             this._wanted[type] = []
         this._wanted[type].push(cb)

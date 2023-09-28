@@ -7,14 +7,14 @@ export class NetServer {
     private _server?: WebSocketServer
     private _clients: Set<NetHandler> = new Set()
 
-    private _onconnection: ((this: NetHandler, server: NetServer) => void)[]
+    private _onconnection: ((this: NetHandler, server: NetServer) => void)[] = []
 
     connection(cb: (this: NetHandler, server: NetServer) => void) {
         this._onconnection.push(cb)
     }
 
     listen(url: string, port: number) {
-        var http = createServer().listen(url, port)
+        var http = createServer().listen(port, url)
         this._server = new WebSocketServer({
             server: http
         })

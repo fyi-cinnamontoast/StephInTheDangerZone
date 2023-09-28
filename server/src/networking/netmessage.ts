@@ -1,4 +1,3 @@
-import { NetConnection } from "./netconnection"
 import { NetHandler } from "./nethandler"
 
 export const AUTHORISE_SUCCESS = true
@@ -7,12 +6,12 @@ export const AUTHORISE_FAILURE = false
 export type NetMessageType = "Authorise" | "Register"
 export type NetMessageContext = { [name: string]: any }
 
-export class NetMessage<_Handler extends NetConnection | NetHandler, _Type extends NetMessageType, _Ctx extends NetMessageContext> {
-    readonly connection: _Handler
+export class NetMessage<_Type extends NetMessageType, _Ctx extends NetMessageContext> {
+    readonly connection: NetHandler
     readonly type: _Type
     readonly context: _Ctx
 
-    constructor(conn: _Handler, type: _Type, ctx: _Ctx) {
+    constructor(conn: NetHandler, type: _Type, ctx: _Ctx) {
         this.connection = conn
         this.type = type
         this.context = ctx
@@ -29,7 +28,7 @@ export class NetMessage<_Handler extends NetConnection | NetHandler, _Type exten
         })
     }
 
-    static toObject<_Handler extends NetConnection | NetHandler>(conn: _Handler, data: string) {
+    static toObject<_Handler extends NetHandler>(conn: _Handler, data: string) {
         var msg: {
             type: NetMessageType,
             context: NetMessageContext
