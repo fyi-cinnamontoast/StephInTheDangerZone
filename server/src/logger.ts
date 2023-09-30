@@ -29,6 +29,5 @@ export default class Logger {
             line: match[2]
         };
         this.handleWrite(`${ new Date(Date.now()).toLocaleString("en-US") } [ TRACE ] at "${trace.filepath}:${trace.line} ${msg}"`);
-        
     }
 }

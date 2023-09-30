@@ -13,15 +13,26 @@ export class NetHandler {
     constructor(socket: WebSocket) {
         this._socket = socket;
         this._socket.on("message", (data) => {
-            var msg = NetMessage.toObject(this, data.toString());
-            if (msg.type in this._wanted)
-                this._wanted[msg.type].forEach(cb => cb.call(msg));
+            try {
+                var msg = NetMessage.toObject(this, data.toString());
+                if (msg.type in this._wanted)
+                    this._wanted[msg.type].forEach(cb => cb.call(msg));
+                }
+            catch (er) {
+                this.send("FatalError", {
+                    code: 400,
+                    msg: "Bad Request"
+                });
+            }
         })
     }
 
     send(type: NetMessageType, context: NetMessageContext): void;
+    send(type: "FatalError", context: { code: number, msg?: string }): void;
     send(type: "Authorise", context: { status: typeof AUTHORISE_SUCCESS | typeof AUTHORISE_FAILURE, err?: { code: number, msg: string } }): void;
     send(type: "Register", context: { status: typeof AUTHORISE_SUCCESS | typeof AUTHORISE_FAILURE, err?: { code: number, msg: string } }): void;
+    send(type: "ChatMessage", context: { username: string, message: string, hash: string }) : void;
+    send(type: "ChatMessage", context: { username: string, err?: { code: number, msg: string } }) : void;
     send(type: NetMessageType, context: NetMessageContext) {
         if (this._socket.readyState == WebSocket.OPEN)
             this._socket.send(NetMessage.toJSON(type, context));
@@ -30,6 +41,7 @@ export class NetHandler {
     on<_Type extends NetMessageType>(type: _Type, cb: (this: NetMessage<_Type, NetMessageContext>) => void): void;
     on(type: "Authorise", cb: (this: NetMessage<"Authorise", { username: string, password: string }>) => void): void;
     on(type: "Register", cb: (this: NetMessage<"Register", { username: string, password: string }>) => void): void;
+    on(type: "ChatMessage", cb: (this: NetMessage<"ChatMessage", { message: string, hash: string }>) => void) : void;
     on<_Type extends NetMessageType>(type: _Type, cb: (this: NetMessage<_Type, NetMessageContext>) => void) {
         if (!this._wanted[type])
             this._wanted[type] = [];

@@ -23,17 +23,17 @@ module.exports = [
     },
     resolve: {
       extensions: ['.ts', '.js'],
+      fallback: {
+        url: require.resolve('url'),
+        assert: require.resolve('assert'),
+        crypto: require.resolve('crypto-browserify'),
+        buffer: require.resolve('buffer'),
+        stream: require.resolve('stream-browserify'),
+      }
     },
     target: "web",
     node: {
       __dirname: false,
-    },
-    devServer: {
-      static: {
-        directory: path.join(__dirname, 'dist'),
-      },
-      compress: true,
-      port: 8080,
-    },
+    }
   }
 ];

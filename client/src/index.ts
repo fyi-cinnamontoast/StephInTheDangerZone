@@ -1,9 +1,7 @@
-import { Application, Assets, BaseTexture, SCALE_MODES } from "pixi.js";
-import { NetConnection } from "./networking/netconnection";
+import { Application, Assets, BaseTexture, HTMLText, SCALE_MODES } from "pixi.js";
 import { PageManager } from "./page";
-import LoginPage from "./LoginPage";
 
-import config from "./config.json";
+import LoadingPage from "./LoadingPage";
 
 // Create and add PIXI Application
 BaseTexture.defaultOptions.scaleMode = SCALE_MODES.NEAREST;
@@ -15,11 +13,7 @@ document.body.appendChild(app.view);
 // Initialize page manager
 PageManager.init(app);
 
-var net = NetConnection.connect(config.connection);
-
 // Load Spritesheet and then start execution
-Assets.load("assets/pack.json").then((value) => {
-    net.open(() => {
-        PageManager.switch(new LoginPage());
-    });
+Assets.load("assets/pack.json").then(() => {
+    PageManager.switch(new LoadingPage());
 });

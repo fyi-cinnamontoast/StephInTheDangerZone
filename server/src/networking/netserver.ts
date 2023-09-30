@@ -31,8 +31,10 @@ export class NetServer {
     }
 
     send(type: NetMessageType, context: NetMessageContext): void;
+    send(type: "FatalError", context: { code: number, msg?: string }): void;
     send(type: "Authorise", context: { username: string, password: string }): void;
     send(type: "Register", context: { username: string, password: string }): void;
+    send(type: "ChatMessage", context: { username: string, message: string, hash: string }) : void;
     send(type: NetMessageType, context: NetMessageContext) {
         this._clients.forEach(client => client.send(type, context))
     }

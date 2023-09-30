@@ -48,17 +48,24 @@ export class NetConnection {
             cb.call(this);
     }
 
+    close() {
+        this._socket.close();
+    }
+
     send(type: NetMessageType, context: NetMessageContext): void;
     send(type: "Authorise", context: { username: string, password: string }): void;
     send(type: "Register", context: { username: string, password: string }): void;
+    send(type: "ChatMessage", context: { message: string, hash: string }): void;
     send(type: NetMessageType, context: NetMessageContext) {
         if (this._socket.readyState == WebSocket.OPEN)
             this._socket.send(NetMessage.toJSON(type, context));
     }
 
-    on<_Type extends NetMessageType>(type: _Type, cb: (this: NetMessage<_Type, NetMessageContext>) => void): void;
+    on(type: "FatalError", cb: (this: NetMessage<"FatalError", { code: number, msg?: string }>) => void): void;
     on(type: "Authorise", cb: (this: NetMessage<"Authorise", { status: typeof AUTHORISE_SUCCESS | typeof AUTHORISE_FAILURE, err?: { code: number, msg: string } }>) => void): void;
     on(type: "Register", cb: (this: NetMessage<"Register", { status: typeof AUTHORISE_SUCCESS | typeof AUTHORISE_FAILURE, err?: { code: number, msg: string } }>) => void): void;
+    on(type: "ChatMessage", cb: (this: NetMessage<"ChatMessage", { username: string, message: string, hash: string }>) => void) : void;
+    on(type: "ChatMessage", cb: (this: NetMessage<"ChatMessage", { username: string, err?: { code: number, msg: string } }>) => void) : void;
     on<_Type extends NetMessageType>(type: _Type, cb: (this: NetMessage<_Type, NetMessageContext>) => void) {
         if (!this._wanted[type])
             this._wanted[type] = [];

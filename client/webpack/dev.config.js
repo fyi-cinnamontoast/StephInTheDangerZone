@@ -26,6 +26,13 @@ module.exports = [
     },
     resolve: {
       extensions: ['.ts', '.js'],
+      fallback: {
+        url: require.resolve('url'),
+        assert: require.resolve('assert'),
+        crypto: require.resolve('crypto-browserify'),
+        buffer: require.resolve('buffer'),
+        stream: require.resolve('stream-browserify'),
+      }
     }
   }
 ];

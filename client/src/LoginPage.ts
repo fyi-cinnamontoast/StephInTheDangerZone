@@ -1,15 +1,19 @@
 import { AnimatedSprite, Application, Assets, Graphics, Text } from "pixi.js";
 import { Input } from "@pixi/ui"
-import Page from "./page";
+import Page, { PageManager } from "./page";
 import PasswordInput from "./PasswordInput";
 import RichButton from "./RichButton";
 import { NetConnection } from "./networking/netconnection";
+import Cookies, { Cookie } from "universal-cookie"
 
 import config from "./config.json";
+import GamePage from "./GamePage";
+import LoadingPage from "./LoadingPage";
 
 export default class LoginPage implements Page {
     display(app: Application): void {
         var net: NetConnection;
+        const cookies = new Cookies(null, { path: "/" });
         // Background
 
         // UI
@@ -112,25 +116,15 @@ export default class LoginPage implements Page {
         // Net
         net = NetConnection.connect(config.connection);
         net.error(function() {
-            loginButtonText.text = "OFFLINE";
-            registerButtonText.text = "OFFLINE";
-
-            (loginButton.view as Graphics)
-                .clear()
-                .beginFill(0x555555)
-                .drawRoundedRect(0, 0, 300, 40, 4);
-
-            (registerButton.view as Graphics)
-                .clear()
-                .beginFill(0x555555)
-                .drawRoundedRect(0, 0, 300, 40, 4);
-
-            loginButton.button.enabled = false;
-            registerButton.button.enabled = false;
+            PageManager.switch(new LoadingPage())
         })
-        net.open(function() {
-            console.log("ONLINE");
-        });
+        net.on("Authorise", function() {
+            if (this.context.status)
+                return PageManager.switch(new GamePage());
+            
+            cookies.remove("username");
+            cookies.remove("password");
+        })
 
         app.ticker.add(() => {
             uiView.position.set(
