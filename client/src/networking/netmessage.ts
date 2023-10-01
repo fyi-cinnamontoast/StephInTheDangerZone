@@ -6,6 +6,8 @@ export const AUTHORISE_FAILURE = false;
 export type NetMessageType = "FatalError" | "Authorise" | "Register" | "ChatMessage";
 export type NetMessageContext = { [name: string]: any };
 
+export type NetMessageAuthorise = NetMessage<"Authorise", { status: typeof AUTHORISE_SUCCESS | typeof AUTHORISE_FAILURE, err?: { code: number, msg: string } }>
+
 export class NetMessage<_Type extends NetMessageType, _Ctx extends NetMessageContext> {
     readonly connection: NetConnection;
     readonly type: _Type;

@@ -6,6 +6,7 @@ import { NetServer } from "./networking/netserver";
 import { createInterface } from "readline";
 import * as crypto from "crypto";
 import Filter from "bad-words";
+import Hash from "./networking/hash";
 
 // Open database and config
 const config = Config.load();
@@ -13,11 +14,6 @@ var db: Database = Database.open(
     path.join(__dirname, config.sqlite.filename)
 );
 
-const hash = crypto.createHash("sha512");
-function hashString(str: string) {
-    hash.update(str);
-    return hash.copy().digest("base64");
-}
 const filter = new Filter();
 
 var server = new NetServer();
@@ -47,7 +43,7 @@ server.connection(function() {
         // On Chat Messsage
         Logger.info(`${ username } : ${ this.context.message }`);
         // Check the CheckSum
-        if (this.context.hash != hashString(this.context.message))
+        if (this.context.hash != Hash.string(this.context.message))
             return this.connection.send("ChatMessage", { 
                 username: username,
                 err: {
@@ -60,7 +56,7 @@ server.connection(function() {
         server.send("ChatMessage", {
             username: username,
             message: cleanMessage,
-            hash: hashString(cleanMessage)
+            hash: Hash.string(cleanMessage)
         });
     })
 });

@@ -1,4 +1,4 @@
-import { NetMessage, NetMessageType, NetMessageContext, AUTHORISE_FAILURE, AUTHORISE_SUCCESS } from "./netmessage"
+import { NetMessage, NetMessageType, NetMessageContext, AUTHORISE_FAILURE, AUTHORISE_SUCCESS, NetMessageAuthorise } from "./netmessage"
 
 export class NetConnection {
     get socket() { return this._socket; }
@@ -62,7 +62,7 @@ export class NetConnection {
     }
 
     on(type: "FatalError", cb: (this: NetMessage<"FatalError", { code: number, msg?: string }>) => void): void;
-    on(type: "Authorise", cb: (this: NetMessage<"Authorise", { status: typeof AUTHORISE_SUCCESS | typeof AUTHORISE_FAILURE, err?: { code: number, msg: string } }>) => void): void;
+    on(type: "Authorise", cb: (this: NetMessageAuthorise) => void): void;
     on(type: "Register", cb: (this: NetMessage<"Register", { status: typeof AUTHORISE_SUCCESS | typeof AUTHORISE_FAILURE, err?: { code: number, msg: string } }>) => void): void;
     on(type: "ChatMessage", cb: (this: NetMessage<"ChatMessage", { username: string, message: string, hash: string }>) => void) : void;
     on(type: "ChatMessage", cb: (this: NetMessage<"ChatMessage", { username: string, err?: { code: number, msg: string } }>) => void) : void;

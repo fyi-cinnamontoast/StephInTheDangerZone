@@ -1,17 +1,23 @@
+// ==== Pixi / Graphics ====
 import { AnimatedSprite, Application, Assets, Graphics, Text } from "pixi.js";
-import { Input } from "@pixi/ui"
-import Page, { PageManager } from "./page";
+import { Input } from "@pixi/ui";
+// ==== Custom UI ====
 import PasswordInput from "./PasswordInput";
 import RichButton from "./RichButton";
+// ==== Cookies ====
+import Cookies from "universal-cookie"
+// ==== Networking ====
 import { NetConnection } from "./networking/netconnection";
-import Cookies, { Cookie } from "universal-cookie"
-
+// ==== Screens ====
+import Screen, { ScreenManager } from "./Screen";
+import GameScreen from "./GameScreen";
+import LoadingScreen from "./LoadingScreen";
+// ==== Config ====
 import config from "./config.json";
-import GamePage from "./GamePage";
-import LoadingPage from "./LoadingPage";
 
-export default class LoginPage implements Page {
+export default class LoginScreen implements Screen {
     display(app: Application): void {
+        // Misc
         var net: NetConnection;
         const cookies = new Cookies(null, { path: "/" });
         // Background
@@ -116,11 +122,11 @@ export default class LoginPage implements Page {
         // Net
         net = NetConnection.connect(config.connection);
         net.error(function() {
-            PageManager.switch(new LoadingPage())
+            ScreenManager.switch(new LoadingScreen())
         })
         net.on("Authorise", function() {
             if (this.context.status)
-                return PageManager.switch(new GamePage());
+                return ScreenManager.switch(new GameScreen());
             
             cookies.remove("username");
             cookies.remove("password");

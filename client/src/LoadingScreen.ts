@@ -1,18 +1,24 @@
-import { AnimatedSprite, Application, Assets, Container, ICanvas, Text } from "pixi.js";
-import Page, { PageManager } from "./page";
-import { NetConnection } from "./networking/netconnection";
+// ==== Pixi / Graphics ====
+import { AnimatedSprite, Application, Assets, Container, Text } from "pixi.js";
+// ==== Cookies ====
 import Cookies from "universal-cookie";
-
+// ==== Networking ====
+import { NetConnection } from "./networking/netconnection";
+// ==== Screens ====
+import Screen, { ScreenManager } from "./Screen";
+import GameScreen from "./GameScreen";
+import LoginScreen from "./LoginScreen";
+// ==== Config ====
 import config from "./config.json"
-import GamePage from "./GamePage";
-import LoginPage from "./LoginPage";
 
-export default class LoadingPage implements Page {
+export default class LoadingScreen implements Screen {
     display(app: Application) {
+        // Misc
         const cookies = new Cookies(null, { path: "/" });
         const net = NetConnection.connect(config.connection);
         const container = new Container();
 
+        // Text
         var loadingText = container.addChild(new Text("Loading...", {
             dropShadow: true,
             dropShadowColor: 0x000000,
@@ -43,6 +49,7 @@ export default class LoadingPage implements Page {
 
         app.stage.addChild(container);
 
+        // Centering everything on the screen
         app.ticker.add(() => {
             container.position.set(
                 (app.view.width / 2),
@@ -50,12 +57,15 @@ export default class LoadingPage implements Page {
             );
         });
 
+        // Pinging the server
         net.open(() => {
+            // If there is username and password saved go directly to game screen, otherwise login screen.
             if (cookies.get("username") && cookies.get("password"))
-                PageManager.switch(new GamePage());
+                ScreenManager.switch(new GameScreen());
             else
-                PageManager.switch(new LoginPage());
+                ScreenManager.switch(new LoginScreen());
         })
+        // Show error, if unable to connect
         net.error(() => {
             loadingText.text = "ERROR: OFFLINE";
             loadingText.style.fill = 0xAA0000;
